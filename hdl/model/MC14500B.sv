@@ -46,8 +46,8 @@ module MC14500B
             GNOME_OP_OR   : next_rr = rr | eD;
             GNOME_OP_ORC  : next_rr = rr | ~eD;
             GNOME_OP_XNOR : next_rr = ~(rr ^ eD);
-            GNOME_OP_IEN  : next_ien = eD;
-            GNOME_OP_OEN  : next_oen = eD;
+            GNOME_OP_IEN  : next_ien = iD;
+            GNOME_OP_OEN  : next_oen = iD;
             GNOME_OP_RTN  : next_skip = '1;
             GNOME_OP_SKZ  : next_skip = ~rr;
             GNOME_OP_STO,

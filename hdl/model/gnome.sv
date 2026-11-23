@@ -89,7 +89,9 @@ module gnome
     logic D;
 
     assign swch_D = (bank_addr < 4'd10) ? switches[bank_addr] : 1'b0;
-    assign cnst_D = 1'b0; // Placeholder for constants bank
+
+    localparam logic constants [2] = '{1'b0, 1'b1};
+    assign cnst_D = constants[bank_addr[0]];
 
     always_comb begin
         unique case (addrbank)
