@@ -51,10 +51,10 @@ module MC14500B
             GNOME_OP_RTN  : next_skip = '1;
             GNOME_OP_SKZ  : next_skip = ~rr;
             GNOME_OP_STO,
-                GNOME_OP_STOC,
-                GNOME_OP_JMP,
-                GNOME_OP_NOP0,
-                GNOME_OP_NOPF :;
+            GNOME_OP_STOC,
+            GNOME_OP_JMP,
+            GNOME_OP_NOP0,
+            GNOME_OP_NOPF :;
             endcase
         end
     end
