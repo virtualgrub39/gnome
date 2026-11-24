@@ -46,7 +46,8 @@ module gnome_tb;
         prog = 1; do_reset();
         for (int i = 0; i < 64; i++) begin
             switches = (i < words.size()) ? words[i] : 10'b0;
-            push_deposit(); push_advance();
+            push_deposit(); 
+            push_advance();
         end
         prog = 0; rst = 0; tick(2);
     endtask

@@ -6,7 +6,7 @@
 #include <cstring>
 
 static constexpr float FPS = 60;
-static constexpr float FREQ = 1e6;
+static constexpr float FREQ = 10e3;
 static constexpr int CYCLES = static_cast<int>(FREQ / FPS);
 
 static void name4(char* out, uint32_t v)
@@ -15,7 +15,7 @@ static void name4(char* out, uint32_t v)
     out[4] = 0;
 }
 
-static void lamps (int y, const char *label, const int *cnt, int n)
+static void lamps (int y, const char *label, const int *cnt, int n, bool align)
 {
     mvprintw (y, 0, "%-10s", label);
     
@@ -24,6 +24,7 @@ static void lamps (int y, const char *label, const int *cnt, int n)
         int pct = cnt[b] * 100 / CYCLES;
         addch (pct >= 90 ? 'O' : pct >= 10 ? 'o' : '.');
         addch (' ');
+        if (align && (b == 6 || b == 4)) addch(' ');
     }
 }
 
@@ -69,21 +70,29 @@ int main (void)
         mvprintw(0, 0, "GNOME front panel   [0-9] switches  [a] advance   [d] deposit");
         mvprintw(1, 0, "        [m] manual  [p] prog        [r] run/reset [q] quit");
         mvprintw(3, 0, "%-10s", "switches");
-        for (int b = 9; b >= 0; b--) { addch((top->switches >> b) & 1 ? '^' : 'v'); addch(' '); }
-        lamps (4, "instr", c_ins, 10);
+        for (int b = 9; b >= 0; b--)
+        {
+            addch((top->switches >> b) & 1 ? '^' : 'v');
+            addch(' ');
+            if (b == 6 || b == 4) addch(' ');
+        }
+        lamps (4, "instr", c_ins, 10, true);
 
-        char op[5], bk[5], txt[32];
-        name4(op, top->op_name); name4(bk, top->bank_name);
-        unsigned ins = top->instruction;
-        if      (!strncmp(op, "JMP", 3)) snprintf(txt, sizeof txt, "%s %u", op, ins & 0x3f);
-        else if (!strncmp(op, "SKZ", 3) || !strncmp(op, "RTN", 3) || !strncmp(op, "NOP0", 4)
-                || !strncmp(op, "NOPF", 5))
-                                        snprintf(txt, sizeof txt, "%s", op);
-        else                             snprintf(txt, sizeof txt, "%s %s %u", op, bk, ins & 0xf);
-        mvprintw(4, 32, "%-10s%s", "decoded", txt);
+        if (top->prog || top->manual)
+        {
+            char op[5], bk[5], txt[32];
+            name4(op, top->op_name); name4(bk, top->bank_name);
+            unsigned ins = top->instruction;
+            if      (!strncmp(op, "JMP", 3)) snprintf(txt, sizeof txt, "%s %u", op, ins & 0x3f);
+            else if (!strncmp(op, "SKZ", 3) || !strncmp(op, "RTN", 3) || !strncmp(op, "NOP0", 4)
+                    || !strncmp(op, "NOPF", 5))
+                                            snprintf(txt, sizeof txt, "%s", op);
+            else                             snprintf(txt, sizeof txt, "%s %s %u", op, bk, ins & 0xf);
+            mvprintw(4, 32, "%-10s%s", "decoded", txt);
+        }
 
-        lamps (5, "pc", c_pc, 6);
-        lamps (6, "expn", c_exp, 16);
+        lamps (5, "pc", c_pc, 6, false);
+        lamps (6, "expn", c_exp, 16, false);
         mvprintw(8, 0, "mode: %s  %s  %s",
                  top->manual ? "MANUAL" : "auto",
                  top->prog   ? "PROG"   : "run-prog",
