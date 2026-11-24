@@ -13,6 +13,7 @@ module gnome
     input logic deposit,        // push
 
     output logic [9:0] instruction,
+    output logic [5:0] pc,
 
     // expansion
     output logic [3:0] bank_addr,
@@ -68,7 +69,6 @@ module gnome
     end
 
     // instruction decoding & data bus multiplexing
-    logic [5:0] pc;
     logic [5:0] operand;
     gnome_op_t opcode;
     gnome_flags_t flags;

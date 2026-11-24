@@ -7,6 +7,7 @@ module gnome_tb;
     logic [9:0] switches = '0;
     logic manual = 0, prog = 0, advance = 0, deposit = 0;
     wire [9:0] instruction;
+    wire [5:0] pc;
     wire [3:0] bank_addr;
     wire expn_we, expn_rd;
     tri expn_D;
